@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="vertical"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   >
+<TextView 
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="@string/hello"
+   />
+<TextView 
+   android:id="@+id/textazimuth"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Azimuth: "
+   />
+<TextView 
+   android:id="@+id/textpitch"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Pitch: "
+   />
+<TextView 
+   android:id="@+id/textroll"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Roll: "
+   />
+<Button 
+   android:id="@+id/connect_proxy"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Connect Proxy"
+   />
+</LinearLayout>

@@ -14,6 +14,7 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
+        public static final int connect_nxt=0x7f050007;
         public static final int connect_proxy=0x7f050005;
         public static final int disconnect_proxy=0x7f050006;
         public static final int textazimuth=0x7f050000;

@@ -3,12 +3,7 @@
    android:orientation="vertical"
    android:layout_width="fill_parent"
    android:layout_height="fill_parent"
-   >
-<TextView 
-   android:layout_width="fill_parent"
-   android:layout_height="wrap_content"
-   android:text="@string/hello"
-   />
+   >   
 <TextView 
    android:id="@+id/textazimuth"
    android:layout_width="fill_parent"
@@ -27,10 +22,28 @@
    android:layout_height="wrap_content"
    android:text="Roll: "
    />
+<TextView 
+   android:id="@+id/textspeed"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Speed: "
+   />
+<TextView 
+   android:id="@+id/texttilt"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Tilt: "
+   />       
 <Button 
    android:id="@+id/connect_proxy"
    android:layout_width="fill_parent"
    android:layout_height="wrap_content"
    android:text="Connect Proxy"
    />
+<Button 
+   android:id="@+id/disconnect_proxy"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"
+   android:text="Disconnect Proxy"
+   />   
 </LinearLayout>

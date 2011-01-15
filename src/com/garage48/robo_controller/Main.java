@@ -24,13 +24,16 @@ public class Main extends Activity {
 
   private PowerManager.WakeLock wl;
   private static final String TAG = "RoboController!!!";
-  TextView textviewAzimuth, textviewPitch, textviewRoll;
+  TextView textviewAzimuth, textviewPitch, textviewRoll, textviewSpeed,
+      textviewTilt;
   private static SensorManager mySensorManager;
   private boolean sersorrunning;
   Button connectProxyButton;
+  Button disconnectProxyButton;
   Socket socket;
   DataOutputStream out;
   List<Sensor> mySensors;
+  boolean send = false;
 
   /** Called when the activity is first created. */
   @Override
@@ -40,6 +43,9 @@ public class Main extends Activity {
     textviewAzimuth = (TextView) findViewById(R.id.textazimuth);
     textviewPitch = (TextView) findViewById(R.id.textpitch);
     textviewRoll = (TextView) findViewById(R.id.textroll);
+
+    textviewSpeed = (TextView) findViewById(R.id.textspeed);
+    textviewTilt = (TextView) findViewById(R.id.texttilt);
 
     mySensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
     mySensors = mySensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
@@ -55,12 +61,7 @@ public class Main extends Activity {
     super.onPause();
     wl.release();
 
-    try {
-      out.close();
-      socket.close();
-    } catch (IOException e) {
-      Log.e(TAG, "IOException", e);
-    }
+    disconnectProxy();
 
     if (sersorrunning) {
       mySensorManager.unregisterListener(mySensorEventListener);
@@ -92,8 +93,16 @@ public class Main extends Activity {
 
     connectProxyButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View v) {
-        if (!socket.isConnected()) {
-          connectToProxy();
+        connectToProxy();
+      }
+    });
+
+    disconnectProxyButton = (Button) findViewById(R.id.disconnect_proxy);
+
+    disconnectProxyButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View v) {
+        if (socket != null && socket.isConnected()) {
+          disconnectProxy();
         }
       }
     });
@@ -108,26 +117,69 @@ public class Main extends Activity {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    send = true;
+  };
 
+  private void disconnectProxy() {
+    try {
+      out.close();
+      socket.close();
+    } catch (IOException e) {
+      Log.e(TAG, "IOException", e);
+    }
+    send = false;
+  };
+
+  private float getSpeed(float roll) {
+    float speed = 0;
+
+    speed = ((roll / 45) - 1) * -1;
+
+    if (speed > 1) {
+      speed = 1;
+    } else if (speed < -1) {
+      speed = -1;
+    }
+
+    return speed;
+  };
+
+  private float getTilt(float pitch) {
+    float tilt;
+
+    tilt = pitch / 90 * -1;
+
+    if (tilt > 1) {
+      tilt = 1;
+    } else if (tilt < -1) {
+      tilt = -1;
+    }
+
+    return tilt;
   };
 
   private SensorEventListener mySensorEventListener = new SensorEventListener() {
 
     public void onSensorChanged(SensorEvent event) {
 
-      String azimuth = String.valueOf(event.values[0]);
-      String pitch = String.valueOf(event.values[1]);
-      String roll = String.valueOf(event.values[2]);
+      float azimuth = event.values[0];
+      float pitch = event.values[1];
+      float roll = event.values[2];
 
       textviewAzimuth.setText("Azimuth: " + azimuth);
       textviewPitch.setText("Pitch: " + pitch);
       textviewRoll.setText("Roll: " + roll);
 
-      if (socket != null && socket.isConnected()) {
+      float speed = getSpeed(roll);
+      float tilt = getTilt(pitch);
+
+      textviewSpeed.setText("Speed: " + speed);
+      textviewTilt.setText("Tilt: " + tilt);
+
+      if (send) {
         try {
-          out
-              .writeBytes("android " + azimuth + " " + pitch + " " + roll
-                  + "\n");
+          Log.d(TAG, "speed " + speed + " " + tilt + "\n");
+          out.writeBytes("speed " + speed + " " + tilt + "\n");
         } catch (IOException e) {
           Log.e(TAG, "IOException", e);
         }
